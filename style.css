@@ -33,6 +33,12 @@ nav a {
   font-weight: bold;
 }
 
+.homepage {
+  background: linear-gradient(to bottom right, #fcefe8, #e8f5fc, #e9fce8);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
 .hero {
   background: #ffe8dc;
   padding: 60px 20px;
