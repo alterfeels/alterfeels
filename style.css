@@ -160,4 +160,52 @@ footer {
   padding: 60px 20px;
   text-align: center;
 }
+.contact-form {
+  background: #fff8f2;
+  padding: 50px 20px;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input, textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+label {
+  font-weight: 600;
+}
+
+.cta-button {
+  background-color: #f582ae;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.cta-button:hover {
+  background-color: #ec6d9a;
+}
+
+.privacy-note {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 20px;
+}
 
