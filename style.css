@@ -1,36 +1,109 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
   margin: 0;
-  padding: 0;
-  background-color: #fdf6f0;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+  background: #fff8f2;
   color: #333;
 }
 
 header {
-  background-color: #ffa07a;
-  color: white;
-  padding: 1.5em;
+  background: linear-gradient(45deg, #ffc1a1, #ffd5a6);
+  padding: 20px;
   text-align: center;
 }
 
+header .logo h1 {
+  margin: 0;
+  font-size: 2.5em;
+}
+
+header .tagline {
+  font-size: 1.1em;
+  margin-top: 5px;
+  color: #444;
+}
+
+nav {
+  margin-top: 10px;
+}
+
 nav a {
-  color: white;
   margin: 0 15px;
   text-decoration: none;
+  color: #5c3d2e;
   font-weight: bold;
 }
 
-main {
-  padding: 20px;
+.hero {
+  background: #ffe8dc;
+  padding: 60px 20px;
+  text-align: center;
 }
 
-h1, h2, h3 {
-  color: #444;
+.hero h2 {
+  font-size: 2em;
+}
+
+.hero p {
+  font-size: 1.2em;
+  margin: 20px 0;
+}
+
+.cta-button {
+  background: #ff8c66;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+  background: #ff7043;
+}
+
+section {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.vision-mission {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  background: #fff1e8;
+}
+
+.vision, .mission {
+  flex: 1 1 300px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.what-we-offer .offerings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.offering {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.invitation {
+  background: #ffe8dc;
 }
 
 footer {
   text-align: center;
-  background: #eee;
-  padding: 10px;
-  margin-top: 40px;
+  background: #ffd5a6;
+  padding: 20px;
+  font-size: 0.9em;
 }
