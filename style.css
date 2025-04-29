@@ -107,3 +107,27 @@ footer {
   padding: 20px;
   font-size: 0.9em;
 }
+.why-support, .how-support-helps, .story {
+  background: #fff8f2;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.support-points {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.support-point {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.story {
+  background: #ffe8dc;
+}
+
