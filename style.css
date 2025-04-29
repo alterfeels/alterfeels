@@ -130,4 +130,34 @@ footer {
 .story {
   background: #ffe8dc;
 }
+.modalities-section {
+  background: #fff1e8;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.modalities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.modality {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.modality:hover {
+  transform: scale(1.02);
+}
+
+.modalities-invite {
+  background: #ffe8dc;
+  padding: 60px 20px;
+  text-align: center;
+}
 
