@@ -247,7 +247,7 @@ label {
 }
 .about-page {
   background: linear-gradient(to bottom, #fef6f9, #f0f8ff);
-  font-family: 'Georgia', serif;
+  /*font-family: 'Georgia', serif;*/
   line-height: 1.8;
   color: #333;
   padding: 40px 20px;
