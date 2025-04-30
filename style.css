@@ -315,3 +315,35 @@ label {
   margin-bottom: 10px;
   color: #555;
 }
+.value-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.value-box {
+  background: #f6faff;
+  border: 1px solid #d4e8ed;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease;
+}
+
+.value-box:hover {
+  transform: translateY(-2px);
+}
+
+.value-box strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #3b6f72;
+  font-size: 1.05em;
+}
+
+.value-box p {
+  color: #555;
+  font-size: 0.95em;
+  margin: 0;
+}
