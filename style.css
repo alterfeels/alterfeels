@@ -245,4 +245,40 @@ label {
   color: #555;
   margin-top: 20px;
 }
+.about-page {
+  background: linear-gradient(to bottom, #fef6f9, #f0f8ff);
+  font-family: 'Georgia', serif;
+  line-height: 1.8;
+  color: #333;
+  padding: 40px 20px;
+}
+
+.about-section {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h2 {
+  font-size: 1.8em;
+  margin-top: 30px;
+  color: #444;
+}
+
+.about-section p,
+.about-section ul {
+  font-size: 1.05em;
+  color: #555;
+}
+
+.about-section ul {
+  padding-left: 20px;
+}
+
+.about-section ul li {
+  margin-bottom: 10px;
+}
 
