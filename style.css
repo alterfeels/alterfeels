@@ -396,7 +396,16 @@ label {
   font-size: 1.05em;
   color: #6c757d;
 }
-
+.founder-photo {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: block;
+  border: 3px solid #d8e3e7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 .signature-name {
   display: block;
   margin-top: 15px;
