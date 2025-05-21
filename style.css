@@ -198,10 +198,7 @@ footer {
   background: #ffe8dc;
 }
 .modalities-section {
-  /*background: #fff1e8;*/
-  background-image: url('images/landscape-7373484_1920.jpg');
-  background-size: cover;
-  background-position: center;
+  background: #fff1e8;
   padding: 50px 20px;
   text-align: center;
 }
@@ -214,7 +211,11 @@ footer {
 }
 
 .modality {
-  background: #fff;
+  /*background: #fff;*/
+  background-image: url('images/landscape-7373484_1920.jpg');
+  background-size: cover;
+  background-position: center;
+  
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
