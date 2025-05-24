@@ -464,7 +464,7 @@ label {
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   padding: 25px;
-  text-align: left;
+  text-align: center;
   transition: transform 0.3s ease;
 }
 
