@@ -484,27 +484,62 @@ label {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
+/* ----- HOW SESSIONS WORK SECTION ----- */
+
 .how-sessions-work {
-  background: #f9fdfc;
-  padding: 50px 20px;
-  max-width: 800px;
-  margin: 40px auto;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 60px 20px;
+  max-width: 1100px;
+  margin: auto;
+  text-align: center;
 }
 
 .how-sessions-work h2 {
-  font-size: 1.8em;
-  margin-bottom: 20px;
+  font-size: 2.2rem;
+  margin-bottom: 40px;
   color: #333;
 }
 
-.session-steps {
-  list-style: decimal inside;
-  padding-left: 0;
-  line-height: 1.6;
+/* Responsive grid */
+.hsw-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
 }
 
-.session-steps li {
-  margin-bottom: 15px;
+/* Individual blocks */
+.hsw-block {
+  background: rgba(255, 255, 255, 0.75);
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  text-align: left;
+}
+
+/* Hover movement (soft and subtle) */
+.hsw-block:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* Headings inside blocks */
+.hsw-block h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+/* Paragraphs */
+.hsw-block p {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #555;
+}
+
+/* Mobile optimization */
+@media (max-width: 480px) {
+  .how-sessions-work h2 {
+    font-size: 1.8rem;
+  }
 }
