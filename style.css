@@ -483,3 +483,28 @@ label {
   margin-bottom: 10px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
+.how-sessions-work {
+  background: #f9fdfc;
+  padding: 50px 20px;
+  max-width: 800px;
+  margin: 40px auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.how-sessions-work h2 {
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.session-steps {
+  list-style: decimal inside;
+  padding-left: 0;
+  line-height: 1.6;
+}
+
+.session-steps li {
+  margin-bottom: 15px;
+}
