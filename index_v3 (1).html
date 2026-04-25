@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AlterFeels — Because Every Feeling Matters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1C1814;
+  --ink2:#F7F2EC;
+  --ink3:#EDE6DB;
+  --border:#1C181420;
+  --rose:#C94F35;
+  --amber:#D4891A;
+  --sage:#4A7C62;
+  --cream:#FDFAF5;
+  --muted:#7A6E65;
+  --dim:#A89E94;
+  --fd:'Playfair Display',Georgia,serif;
+  --fs:'Syne',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink);font-family:var(--fs);overflow-x:hidden;cursor:none}
+
+/* custom cursor */
+#cursor{position:fixed;z-index:9999;pointer-events:none;transition:transform .12s ease}
+#cursor-dot{width:8px;height:8px;background:var(--rose);border-radius:50%;position:absolute;top:-4px;left:-4px;transition:transform .15s ease,background .2s}
+#cursor-ring{width:40px;height:40px;border:1px solid rgba(232,97,74,0.5);border-radius:50%;position:absolute;top:-20px;left:-20px;transition:transform .35s ease,opacity .2s}
+body:hover #cursor-ring{opacity:1}
+a,button{cursor:none}
+a:hover~#cursor #cursor-dot,a:hover #cursor-dot{transform:scale(2.5);background:var(--amber)}
+
+/* canvas bg */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.5rem 3.5rem;
+  border-bottom:1px solid var(--border);
+  background:rgba(253,250,245,0.85);
+  backdrop-filter:blur(20px);
+}
+.logo{
+  font-family:var(--fd);font-size:1.4rem;font-weight:700;
+  letter-spacing:-.01em;color:var(--ink);text-decoration:none;
+}
+.logo em{color:var(--rose);font-style:italic}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{
+  font-size:.72rem;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);text-decoration:none;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-pill{
+  background:var(--rose);color:white;padding:.5rem 1.4rem;
+  border-radius:100px;font-size:.7rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;transition:background .2s,transform .15s;
+}
+.nav-pill:hover{background:var(--amber);transform:scale(1.04)}
+
+/* HERO BG DECORATION */
+.hero{
+  min-height:100vh;display:grid;
+  grid-template-rows:1fr;
+  padding:120px 3.5rem 5rem;
+  position:relative;z-index:1;
+  overflow:hidden;
+}
+/* warm wash zones */
+.hero::before{
+  content:'';position:absolute;
+  right:-120px;top:-80px;
+  width:680px;height:680px;border-radius:50%;
+  background:radial-gradient(circle, rgba(201,79,53,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;
+  left:-80px;bottom:0;
+  width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle, rgba(212,137,26,0.07) 0%, transparent 70%);
+  pointer-events:none;
+}
+/* decorative concentric arcs top-right */
+.hero-deco{
+  position:absolute;right:0;top:60px;
+  width:520px;height:520px;pointer-events:none;z-index:0;
+  opacity:.55;
+}
+/* floating pill behind heading */
+.hero-pill{
+  position:absolute;left:3.5rem;bottom:8%;
+  background:rgba(201,79,53,0.07);
+  border:1px solid rgba(201,79,53,0.15);
+  border-radius:100px;padding:.55rem 1.2rem;
+  font-family:var(--fd);font-size:.85rem;font-style:italic;
+  color:var(--rose);pointer-events:none;z-index:0;
+  animation:floatpill 5s ease-in-out infinite;
+}
+@keyframes floatpill{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-inner{
+  display:grid;grid-template-columns:1fr 420px;
+  align-items:end;gap:4rem;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--rose);margin-bottom:2.5rem;
+}
+.hero-badge::before{
+  content:'';width:24px;height:1px;background:var(--rose);display:block;
+}
+.hero-h1{
+  font-family:var(--fd);
+  font-size:clamp(4rem,8vw,9rem);
+  line-height:.95;font-weight:700;
+  color:var(--ink);
+  margin-bottom:1rem;
+  letter-spacing:-.02em;
+}
+.hero-h1 .line-em{
+  display:block;font-style:italic;font-weight:400;
+  color:var(--rose);
+}
+.hero-h1 .line-sm{
+  display:block;font-size:.42em;
+  font-family:var(--fs);font-weight:300;
+  letter-spacing:.01em;color:var(--muted);
+  font-style:normal;
+  margin-top:.5rem;line-height:1.4;
+}
+.hero-actions{
+  display:flex;gap:1rem;align-items:center;margin-top:3.5rem;flex-wrap:wrap;
+}
+.btn-rose{
+  display:inline-block;background:var(--rose);color:white;
+  padding:1rem 2.6rem;border-radius:100px;
+  font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;transition:background .2s,transform .15s;
+}
+.btn-rose:hover{background:var(--amber);transform:translateY(-2px)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.78rem;color:var(--muted);text-decoration:none;
+  transition:color .2s;letter-spacing:.04em;
+}
+.btn-ghost:hover{color:var(--ink)}
+
+/* hero right column */
+.hero-right{
+  display:flex;flex-direction:column;gap:1.2rem;
+  padding-bottom:.5rem;position:relative;z-index:1;
+}
+
+/* BIG VISUAL CARD */
+.hero-visual-card{
+  border-radius:24px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  background:linear-gradient(145deg, rgba(201,79,53,0.06) 0%, rgba(212,137,26,0.04) 50%, rgba(201,79,53,0.03) 100%);
+  position:relative;
+}
+.hvc-inner{
+  padding:2.8rem 2.4rem 2rem;
+  position:relative;min-height:200px;
+}
+.hvc-quote{
+  font-family:var(--fd);font-size:1.5rem;font-weight:400;
+  line-height:1.45;color:var(--ink);position:relative;z-index:2;
+}
+.hvc-quote em{color:var(--rose);font-style:italic}
+/* decorative orbs inside card */
+.hvc-orb{
+  position:absolute;right:-30px;top:-30px;
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle, rgba(201,79,53,0.12), transparent 70%);
+  pointer-events:none;
+}
+.hvc-orb2{
+  position:absolute;left:20px;bottom:-20px;
+  width:100px;height:100px;border-radius:50%;
+  background:radial-gradient(circle, rgba(212,137,26,0.1), transparent 70%);
+  pointer-events:none;
+}
+.hvc-footer{
+  display:flex;align-items:center;
+  padding:1.2rem 2.4rem;
+  border-top:1px solid var(--border);
+  background:rgba(28,24,20,0.03);
+  gap:0;
+}
+.hvc-stat{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;
+}
+.hvc-num{
+  font-family:var(--fd);font-size:1.8rem;font-weight:700;
+  color:var(--rose);line-height:1;
+}
+.hvc-lbl{
+  font-size:.62rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+}
+.hvc-divider{width:1px;height:36px;background:var(--border)}
+
+/* TWO MINI CARDS ROW */
+.hero-cards-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.hero-mini-card{
+  border-radius:16px;
+  border:1px solid var(--border);
+  padding:1.4rem 1.2rem;
+  background:rgba(28,24,20,0.03);
+  transition:background .25s,border-color .25s,transform .2s;
+  cursor:default;
+}
+.hero-mini-card:hover{
+  background:rgba(201,79,53,0.05);
+  border-color:rgba(201,79,53,0.2);
+  transform:translateY(-3px);
+}
+.hmc-icon{
+  width:40px;height:40px;border-radius:10px;
+  background:rgba(201,79,53,0.08);
+  border:1px solid rgba(201,79,53,0.14);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--rose);margin-bottom:.7rem;
+  transition:background .2s,transform .2s;
+}
+.hero-mini-card:hover .hmc-icon{background:rgba(201,79,53,0.14);transform:scale(1.05)}
+.hmc-t{
+  font-family:var(--fd);font-size:.95rem;font-weight:400;
+  color:var(--ink);margin-bottom:.25rem;
+}
+.hmc-d{font-size:.75rem;color:var(--muted);font-weight:300;line-height:1.5}
+
+/* SCROLL TICKER */
+.ticker{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;padding:.9rem 0;
+  background:var(--ink3);
+}
+.ticker-inner{
+  display:inline-flex;gap:0;white-space:nowrap;
+  animation:tick 25s linear infinite;
+}
+.ticker-inner span{
+  font-family:var(--fd);font-size:1rem;font-style:italic;
+  color:var(--muted);padding:0 2rem;
+}
+.ticker-inner span.hi{color:var(--rose)}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTION SHARED */
+section{position:relative;z-index:1}
+.s-label{
+  font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--rose);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;
+}
+.s-label::before{content:'';width:20px;height:1px;background:var(--rose)}
+.s-title{
+  font-family:var(--fd);font-size:clamp(2.4rem,4vw,4.2rem);
+  font-weight:700;line-height:1.1;color:var(--ink);letter-spacing:-.02em;
+}
+.s-title em{font-style:italic;color:var(--rose)}
+.s-body{font-size:.9rem;color:var(--muted);line-height:1.85;font-weight:300}
+
+/* ABOUT */
+.about{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;min-height:600px;
+}
+.about-left{
+  padding:7rem 4rem 7rem 3.5rem;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.about-right{
+  padding:7rem 3.5rem 7rem 4rem;
+  display:flex;flex-direction:column;justify-content:center;
+  background:var(--ink2);
+}.values{margin-top:2.5rem;display:flex;flex-direction:column;gap:0}
+.val{
+  display:flex;gap:1.4rem;align-items:flex-start;
+  padding:1.5rem 0;border-bottom:1px solid var(--border);
+}
+.val:first-child{border-top:1px solid var(--border)}
+.val-dot{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(201,79,53,0.08);border:1px solid rgba(201,79,53,0.18);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+  color:var(--rose);
+  transition:background .25s;
+}
+.val:hover .val-dot{background:rgba(201,79,53,0.16)}
+.val-t{
+  font-family:var(--fd);font-size:1.1rem;font-weight:400;
+  color:var(--ink);margin-bottom:.25rem;
+}
+.val-d{font-size:.83rem;color:var(--muted);line-height:1.65;font-weight:300}
+
+/* OFFERINGS */
+.offerings-section{
+  padding:8rem 3.5rem;
+  border-top:1px solid var(--border);
+  background:var(--cream);
+}
+.offerings-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;
+  margin-bottom:5rem;align-items:end;
+}
+.grid6{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--border);
+}
+.off-card{
+  padding:2.8rem 2.4rem;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+  transition:background .3s;
+  min-height:240px;
+  display:flex;flex-direction:column;
+  background:var(--cream);
+}
+.off-card:nth-child(3n){border-right:none}
+.off-card:nth-child(4),.off-card:nth-child(5),.off-card:nth-child(6){border-bottom:none}
+.off-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,79,53,0.05),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.off-card:hover{background:var(--ink3)}
+.off-card:hover::after{opacity:1}
+.off-n{
+  font-family:var(--fd);font-size:.8rem;font-style:italic;
+  color:var(--dim);margin-bottom:1rem;
+}
+.off-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(201,79,53,0.08);
+  border:1px solid rgba(201,79,53,0.14);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.2rem;color:var(--rose);
+  transition:background .25s,border-color .25s,transform .2s;
+}
+.off-card:hover .off-icon{
+  background:rgba(201,79,53,0.14);
+  border-color:rgba(201,79,53,0.25);
+  transform:scale(1.06);
+}
+.off-t{
+  font-family:var(--fd);font-size:1.2rem;font-weight:400;
+  color:var(--ink);margin-bottom:.7rem;line-height:1.3;
+  flex:1;
+}
+.off-d{font-size:.8rem;color:var(--muted);line-height:1.7;font-weight:300}
+.off-badge{
+  display:inline-block;margin-top:1rem;
+  padding:.25rem .65rem;font-size:.6rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(240,168,48,0.12);color:var(--amber);
+  border:1px solid rgba(240,168,48,0.2);border-radius:100px;
+}
+
+/* FOUNDER */
+.founder{
+  display:grid;grid-template-columns:480px 1fr;
+  border-top:1px solid var(--border);min-height:650px;
+}
+.founder-panel{
+  background:var(--ink3);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:3.5rem;
+}
+.founder-panel::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(201,79,53,0.12),transparent 60%);
+}
+.founder-initials{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
+  font-family:var(--fd);font-size:14rem;font-weight:700;font-style:italic;
+  color:rgba(28,24,20,0.06);user-select:none;line-height:1;
+  white-space:nowrap;
+}
+.founder-name{
+  position:relative;z-index:1;
+  font-family:var(--fd);font-size:3rem;font-weight:700;font-style:italic;
+  color:var(--ink);line-height:1;margin-bottom:.4rem;
+}
+.founder-role{
+  position:relative;z-index:1;
+  font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--rose);
+}
+.founder-content{
+  padding:6rem 4rem;display:flex;flex-direction:column;justify-content:center;
+  background:var(--cream);
+}
+.founder-pull{
+  font-family:var(--fd);font-size:1.6rem;font-style:italic;font-weight:400;
+  color:var(--ink);line-height:1.5;margin-bottom:2.4rem;
+  padding-left:1.5rem;
+  border-left:2px solid var(--rose);
+}
+.founder-bio{font-size:.88rem;color:var(--muted);line-height:1.9;font-weight:300;margin-bottom:1rem}
+
+/* VIDEOS */
+.videos-section{
+  padding:8rem 3.5rem;
+  border-top:1px solid var(--border);
+  background:var(--ink2);
+}
+.videos-head{
+  display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3.5rem;
+}
+.video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.vid-wrap{
+  aspect-ratio:16/9;border-radius:12px;overflow:hidden;
+  background:var(--ink3);border:1px solid var(--border);
+  position:relative;
+  transition:transform .3s,box-shadow .3s;
+}
+.vid-wrap:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(28,24,20,0.12)}
+.vid-wrap iframe{width:100%;height:100%;border:none;display:block}
+
+/* CONNECT SECTION */
+.connect-section{
+  background:var(--rose);
+  position:relative;overflow:hidden;
+}
+.connect-section::before{
+  content:'';position:absolute;right:-200px;top:-200px;
+  width:600px;height:600px;border-radius:50%;
+  background:rgba(255,255,255,0.06);pointer-events:none;
+}
+.connect-top{
+  padding:6rem 3.5rem 3rem;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:4rem;border-bottom:1px solid rgba(255,255,255,0.15);
+  position:relative;z-index:1;
+}
+.connect-body{
+  display:grid;grid-template-columns:1fr 1fr;
+  position:relative;z-index:1;
+}
+.connect-info{
+  padding:3.5rem 3.5rem 4rem;
+  border-right:1px solid rgba(255,255,255,0.15);
+  display:flex;flex-direction:column;gap:0;
+}
+.connect-info-label{
+  font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,0.55);margin-bottom:2rem;
+}
+.contact-item{
+  display:flex;align-items:center;gap:1.2rem;
+  padding:1.3rem 0;border-bottom:1px solid rgba(255,255,255,0.12);
+  text-decoration:none;
+  transition:opacity .2s;
+}
+.contact-item:first-of-type{border-top:1px solid rgba(255,255,255,0.12)}
+.contact-item:hover{opacity:.75}
+.contact-icon{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  background:rgba(255,255,255,0.15);color:white;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.contact-item:hover .contact-icon{background:rgba(255,255,255,0.25)}
+.contact-label{
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,0.55);margin-bottom:.2rem;
+}
+.contact-val{
+  font-family:var(--fd);font-size:1.15rem;font-weight:400;
+  color:white;
+}
+.connect-note{
+  margin-top:2.2rem;
+  font-size:.82rem;color:rgba(255,255,255,0.5);line-height:1.7;font-weight:300;
+  font-style:italic;
+}
+.connect-form{
+  padding:3.5rem 3.5rem 4rem;
+  display:flex;flex-direction:column;
+}
+.form-wrap{
+  flex:1;border-radius:12px;overflow:hidden;
+  background:white;
+  margin-top:1.2rem;
+  min-height:540px;
+}
+.form-wrap iframe{
+  width:100%;height:100%;min-height:540px;
+  border:none;display:block;
+}
+.cta-title{
+  font-family:var(--fd);font-size:clamp(2.5rem,5vw,5rem);
+  font-weight:700;line-height:1;color:white;letter-spacing:-.02em;
+}
+.cta-title em{font-style:italic;opacity:.8}
+.cta-body{font-size:.95rem;color:rgba(255,255,255,.75);line-height:1.8;font-weight:300}
+
+/* FOOTER */
+footer{
+  background:var(--ink2);padding:2.5rem 3.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border);
+}
+.footer-logo{
+  font-family:var(--fd);font-size:1.1rem;font-weight:700;
+  color:var(--ink);
+}
+.footer-logo em{color:var(--rose);font-style:italic}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{
+  font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color .2s;
+}
+.footer-links a:hover{color:var(--ink)}
+.footer-copy{font-size:.72rem;color:var(--dim)}
+
+/* FADE IN */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:translateY(0)}.reveal.d1{transition-delay:.1s}
+.reveal.d2{transition-delay:.2s}
+.reveal.d3{transition-delay:.3s}
+.reveal.d4{transition-delay:.4s}
+
+@media(max-width:900px){
+  nav{padding:1.2rem 1.5rem}
+  .nav-links{display:none}
+  .hero{padding:100px 1.5rem 4rem}
+  .hero-inner{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .about{grid-template-columns:1fr}
+  .about-left,.about-right{padding:4rem 1.5rem}
+  .about-right{border-top:1px solid var(--border)}
+  .offerings-section{padding:5rem 1.5rem}
+  .offerings-head{grid-template-columns:1fr}
+  .grid6{grid-template-columns:1fr}
+  .off-card{border-right:none;border-bottom:1px solid var(--border);min-height:auto}
+  .off-card:last-child{border-bottom:none}
+  .founder{grid-template-columns:1fr}
+  .founder-panel{min-height:280px}
+  .founder-content{padding:3rem 1.5rem}
+  .videos-section{padding:5rem 1.5rem}
+  .video-grid{grid-template-columns:1fr}
+  .connect-top{flex-direction:column;gap:1.5rem;padding:4rem 1.5rem 2.5rem}
+  .connect-body{grid-template-columns:1fr}
+  .connect-info{padding:2.5rem 1.5rem;border-right:none;border-bottom:1px solid rgba(255,255,255,0.15)}
+  .connect-form{padding:2.5rem 1.5rem 3rem}
+  .form-wrap,.form-wrap iframe{min-height:480px}
+  footer{flex-direction:column;gap:1.5rem;padding:2rem 1.5rem;text-align:center}
+  .footer-links{flex-wrap:wrap;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="cursor"><div id="cursor-dot"></div><div id="cursor-ring"></div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Alter<em>Feels</em></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#offerings">Offerings</a></li>
+    <li><a href="#founder">Sudhan</a></li>
+    <li><a href="#watch">Watch</a></li>
+  </ul>
+  <a href="#connect" class="nav-pill">Begin Journey</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+  <!-- decorative concentric rings -->
+  <svg class="hero-deco" viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="520" cy="0" r="160" stroke="rgba(201,79,53,0.12)" stroke-width="1"/>
+    <circle cx="520" cy="0" r="240" stroke="rgba(201,79,53,0.08)" stroke-width="1"/>
+    <circle cx="520" cy="0" r="320" stroke="rgba(201,79,53,0.05)" stroke-width="1"/>
+    <circle cx="520" cy="0" r="400" stroke="rgba(212,137,26,0.04)" stroke-width="1"/>
+    <!-- organic blob -->
+    <ellipse cx="420" cy="80" rx="90" ry="60" fill="rgba(201,79,53,0.05)" transform="rotate(-20 420 80)"/>
+    <ellipse cx="380" cy="160" rx="50" ry="35" fill="rgba(212,137,26,0.06)" transform="rotate(15 380 160)"/>
+  </svg>
+
+  <!-- floating bottom-left pill -->
+  <div class="hero-pill">Because every feeling matters ✦</div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge reveal">Emotional wellness &amp; mentoring</div>
+      <h1 class="hero-h1 reveal d1">
+        Every<br>
+        <span class="line-em">feeling</span>
+        matters
+        <span class="line-sm">A trusted space for self-discovery,<br>emotional clarity, and professional growth.</span>
+      </h1>
+      <div class="hero-actions reveal d2">
+        <a href="#connect" class="btn-rose">Begin Your Journey</a>
+        <a href="#offerings" class="btn-ghost">Explore Modalities →</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <!-- big visual card -->
+      <div class="hero-visual-card reveal d1">
+        <div class="hvc-inner">
+          <div class="hvc-quote">"We're not here to fix.<br>We're here to walk<br><em>with you.</em>"</div>
+          <div class="hvc-orb"></div>
+          <div class="hvc-orb2"></div>
+        </div>
+        <div class="hvc-footer">
+          <div class="hvc-stat"><span class="hvc-num">5</span><span class="hvc-lbl">Modalities</span></div>
+          <div class="hvc-divider"></div>
+          <div class="hvc-stat"><span class="hvc-num">20+</span><span class="hvc-lbl">Yrs Experience</span></div>
+          <div class="hvc-divider"></div>
+          <div class="hvc-stat"><span class="hvc-num">∞</span><span class="hvc-lbl">Compassion</span></div>
+        </div>
+      </div>
+
+      <!-- two smaller cards -->
+      <div class="hero-cards-row reveal d2">
+        <div class="hero-mini-card">
+          <div class="hmc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+          </div>
+          <div class="hmc-t">Listening Spaces</div>
+          <div class="hmc-d">Truly heard, no agenda</div>
+        </div>
+        <div class="hero-mini-card">
+          <div class="hmc-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12z"/><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/></svg>
+          </div>
+          <div class="hmc-t">Creative Sessions</div>
+          <div class="hmc-d">Art as emotional pathway</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Listening Spaces</span><span class="hi">✦</span>
+    <span>Creative Expression</span><span class="hi">✦</span>
+    <span>Mindful Stillness</span><span class="hi">✦</span>
+    <span>Professional Mentoring</span><span class="hi">✦</span>
+    <span>Community Connection</span><span class="hi">✦</span>
+    <span>Guided Reflection</span><span class="hi">✦</span>
+    <span>Emotional Clarity</span><span class="hi">✦</span>
+    <span>Authentic Growth</span><span class="hi">✦</span>
+    <span>Listening Spaces</span><span class="hi">✦</span>
+    <span>Creative Expression</span><span class="hi">✦</span>
+    <span>Mindful Stillness</span><span class="hi">✦</span>
+    <span>Professional Mentoring</span><span class="hi">✦</span>
+    <span>Community Connection</span><span class="hi">✦</span>
+    <span>Guided Reflection</span><span class="hi">✦</span>
+    <span>Emotional Clarity</span><span class="hi">✦</span>
+    <span>Authentic Growth</span><span class="hi">✦</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-left">
+    <p class="s-label">Who We Are</p>
+    <h2 class="s-title reveal">Growth starts<br>where you feel<br><em>seen</em></h2>
+    <p class="s-body reveal d1" style="margin-top:1.8rem;max-width:420px">
+      AlterFeels was born from a simple belief — everyone deserves a space where they feel heard, understood, and supported. Life, with all its highs and lows, can feel overwhelming. No one should navigate it alone.
+    </p>
+    <p class="s-body reveal d2" style="margin-top:1rem;max-width:420px">
+      Whether you're stuck in your personal world, seeking balance professionally, or looking to reconnect with yourself — this is your space to breathe, reflect, and realign.
+    </p>
+  </div>
+  <div class="about-right">
+    <p class="s-label">Our Values</p>
+    <ul class="values">
+      <li class="val reveal">
+        <div class="val-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div>
+          <div class="val-t">Warmth over formality</div>
+          <div class="val-d">You'll never be reduced to a checkbox. Every interaction is human, personal, and unhurried.</div>
+        </div>
+      </li>
+      <li class="val reveal d1">
+        <div class="val-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+        <div>
+          <div class="val-t">Listening over advising</div>
+          <div class="val-d">We're here to hear you — truly. Not to fix, but to walk alongside you at your pace.</div>
+        </div>
+      </li>
+      <li class="val reveal d2">
+        <div class="val-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div>
+          <div class="val-t">Expression over expectation</div>
+          <div class="val-d">You set the pace, the mood, and the tone. There's no "right" way to feel supported here.</div>
+        </div>
+      </li>
+      <li class="val reveal d3">
+        <div class="val-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <div>
+          <div class="val-t">Progress over perfection</div>
+          <div class="val-d">Small shifts matter. We celebrate every step, however quiet.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- OFFERINGS -->
+<section class="offerings-section" id="offerings">
+  <div class="offerings-head">
+    <div>
+      <p class="s-label reveal">What We Offer</p>
+      <h2 class="s-title reveal d1">Different paths,<br><em>one purpose</em></h2>
+    </div>
+    <p class="s-body reveal" style="max-width:340px">There's no single way to feel better. We offer diverse, gentle methods — creative, calm, and conversational — so you can choose what resonates.</p>
+  </div>
+  <div class="grid6">
+    <div class="off-card reveal">
+      <div class="off-n">01</div>
+      <div class="off-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+      </div>
+      <div class="off-t">Listening Spaces</div>
+      <div class="off-d">Gentle one-on-one conversations where you are truly heard — from relationships to identity to everyday struggles. No agenda, no judgment.</div>
+    </div>
+    <div class="off-card reveal d1">
+      <div class="off-n">02</div>
+      <div class="off-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/><path d="M19 8h2M3 8h2"/><path d="M19 12l1.5 1.5M3 12l-1.5 1.5"/></svg>
+      </div>
+      <div class="off-t">Professional Mentoring</div>
+      <div class="off-d">Navigate burnout, workplace challenges, performance pressure, and creative blocks in a safe, non-judgmental space.</div>
+    </div>
+    <div class="off-card reveal d2">
+      <div class="off-n">03</div>
+      <div class="off-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12z"/><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4"/><path d="M12 8V4M12 20v-4M8 12H4M20 12h-4"/></svg>
+      </div>
+      <div class="off-t">Creative Art-Based Sessions</div>
+      <div class="off-d">Music, drawing, painting, and visual journaling as pathways to explore your feelings and rediscover your strengths.</div>
+    </div>
+    <div class="off-card reveal d1">
+      <div class="off-n">04</div>
+      <div class="off-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      </div>
+      <div class="off-t">Mindful Stillness</div>
+      <div class="off-d">Breathwork, visualisation, and mindful pauses to reconnect with your inner calm and return to the present moment.</div>
+    </div>
+    <div class="off-card reveal d2">
+      <div class="off-n">05</div>
+      <div class="off-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="off-t">Community Connection</div>
+      <div class="off-d">A circle of trust and encouragement. Safe, compassionate community spaces — because support is shared healing.</div>
+    </div>
+    <div class="off-card reveal d3">
+      <div class="off-n">06</div>
+      <div class="off-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="off-t">Behaviour Insights</div>
+      <div class="off-d">An intelligent layer that surfaces personalised emotional insights — always with your full awareness and consent.</div>
+      <span class="off-badge">Optional add-on</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder" id="founder">
+  <div class="founder-panel">
+    <div class="founder-initials">S</div>
+    <div class="founder-name reveal">Sudhan</div>
+    <div class="founder-role reveal d1">Founder, AlterFeels</div>
+  </div>
+  <div class="founder-content">
+    <p class="s-label">The Mind Behind AlterFeels</p>
+    <blockquote class="founder-pull reveal">
+      "AlterFeels isn't just a platform — it's a reflection of everything I've learned, unlearned, and continue to explore about being human."
+    </blockquote>
+    <p class="founder-bio reveal d1">
+      With over two decades of experience in global organisations — building products, shaping teams, mentoring minds — I've always been drawn to what makes us feel connected, creative, and truly heard.
+    </p>
+    <p class="founder-bio reveal d2">
+      My journey weaves together a love for music, art, and psychology with a deep commitment to people — understanding not just what is said, but also what remains unspoken. AlterFeels is an expression of that calling — where professional experience meets human curiosity.
+    </p>
+    <p class="founder-bio reveal d3">
+      If you're here, I'm glad our paths crossed. I hope this space gives you room to breathe, reflect, and reconnect.
+    </p>
+  </div>
+</section>
+
+<!-- VIDEOS -->
+<section class="videos-section" id="watch">
+  <div class="videos-head">
+    <div>
+      <p class="s-label">Watch</p>
+      <h2 class="s-title reveal" style="font-size:2.5rem">Voices that <em>resonate</em></h2>
+    </div>
+    <p class="s-body" style="max-width:260px;text-align:right;font-size:.82rem">Conversations and reflections curated for your emotional journey.</p>
+  </div>
+  <div class="video-grid">
+    <div class="vid-wrap reveal">
+      <iframe src="https://www.youtube.com/embed/P5cYMFZfnMU?controls=0" title="Video 1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="vid-wrap reveal d1">
+      <iframe src="https://www.youtube.com/embed/HQaSeJfcFBQ?controls=0" title="Video 2" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="vid-wrap reveal d2">
+      <iframe src="https://www.youtube.com/embed/QX8lVik19t4?controls=0" title="Video 3" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section class="connect-section" id="connect">
+  <div class="connect-top">
+    <div>
+      <p class="s-label" style="color:rgba(255,255,255,.6)">Reach Out</p>
+      <h2 class="cta-title reveal">Your<br>journey<br>begins<br><em>here.</em></h2>
+    </div>
+    <p class="cta-body reveal" style="max-width:360px;align-self:flex-end">Whatever you're carrying, AlterFeels offers a gentle space to set it down, explore it, and move forward — at your own pace.</p>
+  </div>
+
+  <div class="connect-body">
+    <!-- LEFT: contact info -->
+    <div class="connect-info reveal">
+      <p class="connect-info-label">Get in touch directly</p>
+
+      <a href="tel:+918197333456" class="contact-item">
+        <div class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Phone</div>
+          <div class="contact-val">+91 81973 33456</div>
+        </div>
+      </a>
+
+      <a href="https://wa.me/918197333456" target="_blank" rel="noopener" class="contact-item">
+        <div class="contact-icon" style="background:rgba(37,211,102,0.15);color:#25D366">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">WhatsApp</div>
+          <div class="contact-val">+91 81973 33456</div>
+        </div>
+      </a>
+
+      <a href="https://linktr.ee/alterfeels" target="_blank" rel="noopener" class="contact-item">
+        <div class="contact-icon" style="background:rgba(57,219,138,0.12);color:#39DB8A">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7.953 15.066c-.08.163-.08.324-.08.486.08.517.528.897 1.052.897h2.265v5.836c0 .897.72 1.715 1.7 1.715.898 0 1.7-.736 1.7-1.715v-5.836h2.265c.528 0 .975-.38 1.052-.897.08-.487-.243-.975-.73-1.14l-4.45-2.59a1.097 1.097 0 0 0-1.054 0l-4.45 2.59a1.07 1.07 0 0 0-.27.654ZM12.82.12a1.087 1.087 0 0 0-1.054 0L7.317 2.71c-.487.244-.73.814-.568 1.3.162.488.649.815 1.135.733l4.126-2.43 4.127 2.43c.162.082.324.082.487.082.406 0 .81-.245.975-.733.162-.486-.082-.975-.568-1.3L12.82.12ZM7.236 9.58c-.162-.487-.648-.814-1.135-.733L2.01 11.04c-.487.244-.73.814-.568 1.3.081.325.325.568.649.73l4.208 2.43c.162.082.324.082.487.082.406 0 .81-.245.975-.733.162-.487-.082-.975-.568-1.3L4.84 12l2.071-1.14c.487-.325.568-.975.325-1.3Zm9.528-.082c-.162.082-.244.162-.325.325-.325.487-.162 1.056.325 1.3L18.835 12l-2.39 1.55c-.487.325-.65.895-.326 1.3.163.324.487.57.894.57.162 0 .324 0 .486-.082l4.208-2.43c.325-.162.568-.487.649-.73.162-.487-.082-1.057-.568-1.3l-4.127-2.194c-.162-.162-.405-.162-.649-.162l.081.082-.33-.007Z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Linktree</div>
+          <div class="contact-val">linktr.ee/alterfeels</div>
+        </div>
+      </a>
+
+      <div class="connect-note">
+        We typically respond within a few hours. You can also drop us a message via the form →
+      </div>
+    </div>
+
+    <!-- RIGHT: Google Form -->
+    <div class="connect-form reveal d1">
+      <p class="connect-info-label">Or fill in the form</p>
+      <div class="form-wrap">
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLSfxhh7mpgAGnBornJ1xYURRA9TSHOdA8jwVufzbvvVPRiamgg/viewform?embedded=true"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          title="AlterFeels Contact Form">
+          Loading…
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Alter<em>Feels</em></div>
+  <nav class="footer-links">
+    <a href="#about">About</a>
+    <a href="#offerings">Offerings</a>
+    <a href="#founder">Sudhan</a>
+    <a href="#watch">Watch</a>
+    <a href="#connect">Connect</a>
+  </nav>
+  <p class="footer-copy">© 2025 AlterFeels. Every feeling matters.</p>
+</footer>
+
+<script>
+// ── cursor
+const cur = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.transform=`translate(${mx}px,${my}px)`});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.transform=`translate(${rx-mx}px,${ry-my}px)`;requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.style.transform='scale(2.5)';dot.style.background='#F0A830';ring.style.transform='scale(1.6)'});
+  el.addEventListener('mouseleave',()=>{dot.style.transform='scale(1)';dot.style.background='#E8614A';ring.style.transform='scale(1)'});
+});
+
+// ── canvas particles
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+
+class P{
+  constructor(){this.reset()}
+  reset(){
+    this.x=Math.random()*W;this.y=Math.random()*H;
+    this.r=Math.random()*1.5+.3;
+    this.vx=(Math.random()-.5)*.15;this.vy=(Math.random()-.5)*.15;
+    this.alpha=Math.random()*.25+.08;
+    this.hue=Math.random()<.6?'201,79,53':'212,137,26';
+  }
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${this.hue},${this.alpha})`;ctx.fill();
+  }
+}
+for(let i=0;i<90;i++)particles.push(new P());
+
+// connections
+function drawConnections(){
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.strokeStyle=`rgba(201,79,53,${(1-d/90)*.06})`;
+        ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+  }
+}
+
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  drawConnections();
+  particles.forEach(p=>{p.update();p.draw()});
+  requestAnimationFrame(loop);
+}
+loop();
+
+// mouse repel
+document.addEventListener('mousemove',e=>{
+  particles.forEach(p=>{
+    const dx=e.clientX-p.x,dy=e.clientY-p.y;
+    const d=Math.sqrt(dx*dx+dy*dy);
+    if(d<120){p.vx-=dx/d*.08;p.vy-=dy/d*.08}
+  });
+});
+
+// ── scroll reveal
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}});
+},{threshold:.1});
+reveals.forEach(r=>obs.observe(r));
+</script>
+</body>
+</html>
